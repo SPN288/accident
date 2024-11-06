@@ -44,7 +44,7 @@ app.post("/upload_sensor_data", async (req, res) => {
         console.error("Database Error:", error);
     }
 });
-
-app.listen(3000, () => {
+const PORT = env.process.PORT|| 3000;
+app.listen(PORT, () => {
     console.log("Server running on port 3000");
 });

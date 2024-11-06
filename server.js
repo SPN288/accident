@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -46,5 +47,5 @@ app.post("/upload_sensor_data", async (req, res) => {
 });
 const port = env.process.PORT || 3000;
 app.listen(port, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${port}`);
 });

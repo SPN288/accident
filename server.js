@@ -92,7 +92,7 @@ const sensorDataSchema = new mongoose.Schema({
     }
   });
   async function deleteOldData() {
-    const threshold = Date.now() - 3000; // Current time minus 5 seconds
+    const threshold = Date.now() - 5000; // Current time minus 5 seconds
     try {
       await SensorData.deleteMany({ timestamp: { $lt: threshold } });
       console.log("Old data deleted successfully!");

@@ -91,6 +91,19 @@ const sensorDataSchema = new mongoose.Schema({
       console.error("Database Error:", error);
     }
   });
+  async function deleteOldData() {
+    const threshold = Date.now() - 3000; // Current time minus 5 seconds
+    try {
+      await SensorData.deleteMany({ timestamp: { $lt: threshold } });
+      console.log("Old data deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting old data:", error);
+    }
+  }
+  
+  // Start the interval to delete old data every second
+  setInterval(deleteOldData, 1000); // 1000 milliseconds = 1 second
+
 const port = 1000;
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

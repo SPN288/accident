@@ -1,9 +1,10 @@
 {
   "dependencies": {
     "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
-    "mongoose": "^8.7.2"
+    "mongoose": "^8.8.1"
   },
   "scripts": {
     "start": "node server.js"
@@ -14,5 +15,5 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "��#\u0000 \u0000a\u0000c\u0000c\u0000i\u0000d\u0000e\u0000n\u0000t\u0000\r\u0000 \u0000"
 }

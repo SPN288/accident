@@ -82,7 +82,7 @@ const Accident = mongoose.model("Accident", accidentSchema);
     const threshold = Date.now() - 5000; // Current time minus 5 seconds
     try {
       await SensorData.deleteMany({ timestamp: { $lt: threshold } });
-      console.log("Old data deleted successfully!");
+      //console.log("Old data deleted successfully!");
     } catch (error) {
       console.error("Error deleting old data:", error);
     }

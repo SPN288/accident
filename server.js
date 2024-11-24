@@ -166,49 +166,49 @@ const Accident = mongoose.model("Accident", accidentSchema);
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // 2. Endpoint to check accident clusters
-// app.get('/check_accidents', async (req, res) => {
-//   try {
-//       const clusters = await AccidentCluster.find({ accidentStatus: true });
-//       res.status(200).json({ accidents: clusters });
-//   } catch (error) {
-//       console.error("Error fetching accident clusters:", error);
-//       res.status(500).json({ message: "Failed to fetch accident clusters", error });
-//   }
-// });
 app.get('/check_accidents', async (req, res) => {
   try {
-    const clusters = await AccidentCluster.find({ accidentStatus: true });
-
-    // Send the response first
-    res.status(200).json({ accidents: clusters });
-
-    // Update the status to false for each cluster asynchronously
-    clusters.forEach(async (cluster) => {
-      await AccidentCluster.updateOne({ _id: cluster._id }, { $set: { accidentStatus: false } })
-      
-        .catch(err => {
-          console.error(`Error updating status for cluster ${cluster._id}:`, err);
-        });
-    });
-
+      const clusters = await AccidentCluster.find({ accidentStatus: true });
+      res.status(200).json({ accidents: clusters });
   } catch (error) {
-    console.error("Error fetching accident clusters:", error);
-    res.status(500).json({ message: "Failed to fetch accident clusters", error });
+      console.error("Error fetching accident clusters:", error);
+      res.status(500).json({ message: "Failed to fetch accident clusters", error });
   }
 });
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Endpoint to check for accident status
+// app.get("/accident-status", async (req, res) => {
+//   try {
+//       const activeAccident = await Accident.findOne({ status: true });
+//       if (activeAccident) {
+//           res.status(200).json(activeAccident);
+//       } else {
+//           res.status(404).json({ message: "No active accidents found" });
+//       }
+//   } catch (error) {
+//       res.status(500).json({ error: "Error fetching accident status" });
+//   }
+// });
 app.get("/accident-status", async (req, res) => {
   try {
-      const activeAccident = await Accident.findOne({ status: true });
-      if (activeAccident) {
-          res.status(200).json(activeAccident);
-      } else {
-          res.status(404).json({ message: "No active accidents found" });
-      }
+    const activeAccident = await Accident.findOne({ status: true });
+
+    if (activeAccident) {
+      // Send the response first
+      res.status(200).json(activeAccident);
+
+      // Update the status to false in a separate async operation
+      await Accident.updateOne({ _id: activeAccident._id }, { $set: { status: false } })
+        .catch(err => {
+          console.error("Error updating accident status:", err);
+        });
+    } else {
+      res.status(404).json({ message: "No active accidents found" });
+    }
   } catch (error) {
-      res.status(500).json({ error: "Error fetching accident status" });
+    res.status(500).json({ error: "Error fetching accident status" });
   }
 });
 

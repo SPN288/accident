@@ -185,6 +185,7 @@ app.get('/check_accidents', async (req, res) => {
     // Update the status to false for each cluster asynchronously
     clusters.forEach(async (cluster) => {
       await AccidentCluster.updateOne({ _id: cluster._id }, { $set: { accidentStatus: false } })
+      
         .catch(err => {
           console.error(`Error updating status for cluster ${cluster._id}:`, err);
         });

@@ -199,11 +199,13 @@ app.get("/accident-status", async (req, res) => {
       // Send the response first
       res.status(200).json(activeAccident);
 
-      // Update the status to false in a separate async operation
-      await Accident.updateOne({ _id: activeAccident._id }, { $set: { status: false } })
-        .catch(err => {
-          console.error("Error updating accident status:", err);
-        });
+      // Delay the status update
+      setTimeout(async () => {
+        await Accident.updateOne({ _id: activeAccident._id }, { $set: { status: false } })
+          .catch(err => {
+            console.error("Error updating accident status:", err);
+          });
+      }, 4000); // 4 seconds delay
     } else {
       res.status(404).json({ message: "No active accidents found" });
     }

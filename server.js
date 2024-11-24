@@ -2,16 +2,87 @@ require('dotenv').config()
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const app = express();
 app.use(bodyParser.json());
+// Middleware
+app.use(cors());
+app.use(express.json());
 
 // Connect to MongoDB Atlas
 const dbURI = 'mongodb+srv://satya288:hellomini@spnweb.2nt6szt.mongodb.net/?retryWrites=true&w=majority&appName=spnweb';
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("Connected to MongoDB Atlas"))
     .catch(err => console.log("Error: ", err));
+////////////////////////////////////////////////////////////////////////////////
 
+// Define data schema and model
+const alertSchema = new mongoose.Schema({
+  mobileNumber: { type: String, required: true },
+  latitude: { type: Number, required: true },
+  longitude: { type: Number, required: true },
+  status: { type: Boolean, required: true },
+  timestamp: { type: Date, default: Date.now },
+  noOfBeds: { type: Number, required: true },
+});
+
+const Data = mongoose.model("alert", alertSchema);
+
+
+// Endpoint to post data
+app.post("/postData", async (req, res) => {
+  try {
+      const { mobileNumber, latitude, longitude, status, noOfBeds } = req.body;
+      const newData = new Data({ mobileNumber, latitude, longitude, status, noOfBeds });
+      await newData.save();
+      res.status(201).json({ message: "Data saved successfully!" });
+  } catch (error) {
+      console.error("Error saving data:", error);
+      res.status(500).json({ error: "Failed to save data" });
+  }
+});
+
+// Endpoint to check if any data has status === true
+app.get("/checkStatus", async (req, res) => {
+  try {
+      const result = await Data.findOne({ status: true }).select(
+          "mobileNumber latitude longitude noOfBeds timestamp"
+      );
+      if (result) {
+          res.status(200).json(result);
+      } else {
+          res.status(200).json(null); // No matching records
+      }
+  } catch (error) {
+      console.error("Error checking status:", error);
+      res.status(500).json({ error: "Failed to check status" });
+  }
+});
+
+// Endpoint to update status
+app.post("/updateStatus", async (req, res) => {
+  try {
+      const { _id } = req.body;
+      await Data.findByIdAndUpdate(_id, { status: false });
+      res.status(200).json({ message: "Status updated successfully!" });
+  } catch (error) {
+      console.error("Error updating status:", error);
+      res.status(500).json({ error: "Failed to update status" });
+  }
+});
+
+// Endpoint to fetch all data
+app.get("/getAllData", async (req, res) => {
+  try {
+      const allData = await Data.find();
+      res.status(200).json(allData);
+  } catch (error) {
+      console.error("Error fetching data:", error);
+      res.status(500).json({ error: "Failed to fetch data" });
+  }
+});
+    ////////////////////////////////////////////////////////////////////////////////////////////
 
 const sensorDataSchema = new mongoose.Schema({
     mobileNumber: { type: String, required: true }, // Make mobile number required
@@ -95,13 +166,33 @@ const Accident = mongoose.model("Accident", accidentSchema);
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // 2. Endpoint to check accident clusters
+// app.get('/check_accidents', async (req, res) => {
+//   try {
+//       const clusters = await AccidentCluster.find({ accidentStatus: true });
+//       res.status(200).json({ accidents: clusters });
+//   } catch (error) {
+//       console.error("Error fetching accident clusters:", error);
+//       res.status(500).json({ message: "Failed to fetch accident clusters", error });
+//   }
+// });
 app.get('/check_accidents', async (req, res) => {
   try {
-      const clusters = await AccidentCluster.find({ accidentStatus: true });
-      res.status(200).json({ accidents: clusters });
+    const clusters = await AccidentCluster.find({ accidentStatus: true });
+
+    // Send the response first
+    res.status(200).json({ accidents: clusters });
+
+    // Update the status to false for each cluster asynchronously
+    clusters.forEach(async (cluster) => {
+      await AccidentCluster.updateOne({ _id: cluster._id }, { $set: { accidentStatus: false } })
+        .catch(err => {
+          console.error(`Error updating status for cluster ${cluster._id}:`, err);
+        });
+    });
+
   } catch (error) {
-      console.error("Error fetching accident clusters:", error);
-      res.status(500).json({ message: "Failed to fetch accident clusters", error });
+    console.error("Error fetching accident clusters:", error);
+    res.status(500).json({ message: "Failed to fetch accident clusters", error });
   }
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,7 +250,7 @@ app.post("/accidents", async (req, res) => {
 
 
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 9000;
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });

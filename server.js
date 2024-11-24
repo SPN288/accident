@@ -205,7 +205,7 @@ app.get("/accident-status", async (req, res) => {
           .catch(err => {
             console.error("Error updating accident status:", err);
           });
-      }, 4000); // 4 seconds delay
+      }, 9669); // 4 seconds delay
     } else {
       res.status(404).json({ message: "No active accidents found" });
     }

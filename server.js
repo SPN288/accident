@@ -17,7 +17,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .catch(err => console.log("Error: ", err));
 ////////////////////////////////////////////////////////////////////////////////
 
-// Define data schema and model
+// Define data schema and model aviskhit
 const alertSchema = new mongoose.Schema({
   mobileNumber: { type: String, required: true },
   latitude: { type: Number, required: true },
@@ -30,7 +30,7 @@ const alertSchema = new mongoose.Schema({
 const Data = mongoose.model("alert", alertSchema);
 
 
-// Endpoint to post data
+// Endpoint to post data aviskhit
 app.post("/postData", async (req, res) => {
   try {
       const { mobileNumber, latitude, longitude, status, noOfBeds } = req.body;
@@ -43,24 +43,28 @@ app.post("/postData", async (req, res) => {
   }
 });
 
-// Endpoint to check if any data has status === true
+// Endpoint to check if any data has status === true aviskhit
 app.get("/checkStatus", async (req, res) => {
   try {
-      const result = await Data.findOne({ status: true }).select(
-          "mobileNumber latitude longitude noOfBeds timestamp"
-      );
-      if (result) {
-          res.status(200).json(result);
-      } else {
-          res.status(200).json(null); // No matching records
-      }
+    const result = await Data.findOne({ status: true }).select(
+      "mobileNumber latitude longitude noOfBeds timestamp"
+    );
+
+    if (result) {
+      // Update the status to false after fetching the data
+      await Data.updateOne({ _id: result._id }, { $set: { status: false } });
+
+      res.status(200).json(result);
+    } else {
+      res.status(200).json(null); // No matching records
+    }
   } catch (error) {
-      console.error("Error checking status:", error);
-      res.status(500).json({ error: "Failed to check status" });
+    console.error("Error checking status:", error);
+    res.status(500).json({ error: "Failed to check status" });
   }
 });
 
-// Endpoint to update status
+// Endpoint to update status aviskhit
 app.post("/updateStatus", async (req, res) => {
   try {
       const { _id } = req.body;
@@ -72,7 +76,7 @@ app.post("/updateStatus", async (req, res) => {
   }
 });
 
-// Endpoint to fetch all data
+// Endpoint to fetch all data avikshit
 app.get("/getAllData", async (req, res) => {
   try {
       const allData = await Data.find();
@@ -250,6 +254,62 @@ app.post("/accidents", async (req, res) => {
   }
 });
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Hospital Schema and Model
+const hospitalSchema = new mongoose.Schema({
+  hospitalID: { type: Number, unique: true, required: true },
+  latitude: { type: Number, required: true },
+  longitude: { type: Number, required: true },
+  total_of_available_beds: { type: Number, required: true },
+  no_of_available_beds: { type: Number, required: true }
+});
+
+const Hospital = mongoose.model('Hospital', hospitalSchema);
+
+// Routes
+
+// Create and Add Hospital Data
+app.post('/hospital', async (req, res) => {
+  try {
+    const hospital = new Hospital(req.body);
+    await hospital.save();
+    res.status(201).json(hospital);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Find Hospital by hospitalID
+app.get('/hospital/:id', async (req, res) => {
+  try {
+    const hospital = await Hospital.findOne({ hospitalID: req.params.id });
+    if (!hospital) {
+      return res.status(404).json({ message: "Hospital not found" });
+    }
+    res.json(hospital);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update no_of_available_beds by hospitalID
+app.patch('/hospital/:id', async (req, res) => {
+  try {
+    const { no_of_available_beds } = req.body;
+    const hospital = await Hospital.findOneAndUpdate(
+      { hospitalID: req.params.id },
+      { $set: { no_of_available_beds } },
+      { new: true }
+    );
+    if (!hospital) {
+      return res.status(404).json({ message: "Hospital not found" });
+    }
+    res.json(hospital);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 

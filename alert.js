@@ -31,7 +31,7 @@ const Data = mongoose.model("alert", alertSchema);
 app.use(cors());
 app.use(express.json());
 
-// Endpoint to post data
+// Endpoint to post data to alert databse for hospital alert
 app.post("/postData", async (req, res) => {
     try {
         const { mobileNumber, latitude, longitude, status, noOfBeds } = req.body;

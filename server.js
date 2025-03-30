@@ -15,7 +15,7 @@ const dbURI = 'mongodb+srv://satya288:hellomini@spnweb.2nt6szt.mongodb.net/?retr
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("Connected to MongoDB Atlas"))
     .catch(err => console.log("Error: ", err));
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Define data schema and model aviskhit
 const alertSchema = new mongoose.Schema({
@@ -43,7 +43,7 @@ app.post("/postData", async (req, res) => {
   }
 });
 
-// Endpoint to check if any data has status === true aviskhit
+// Endpoint to check if any data has status === true avikshith
 app.get("/checkStatus", async (req, res) => {
   try {
     const result = await Data.findOne({ status: true }).select(
@@ -86,7 +86,7 @@ app.get("/getAllData", async (req, res) => {
       res.status(500).json({ error: "Failed to fetch data" });
   }
 });
-    ////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const sensorDataSchema = new mongoose.Schema({
     mobileNumber: { type: String, required: true }, // Make mobile number required
@@ -308,6 +308,38 @@ app.patch('/hospital/:id', async (req, res) => {
     res.json(hospital);
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//    Ambulance app alert system
+// Define Schema and Model
+const locationSchema = new mongoose.Schema({
+  latitude: Number,
+  longitude: Number,
+  status: Boolean
+});
+
+const Location = mongoose.model('Location', locationSchema);
+
+// GET endpoint to fetch data
+app.get('/data', async (req, res) => {
+  try {
+    const locations = await Location.find();
+    res.json(locations);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error', error });
+  }
+});
+
+// POST endpoint to add data
+app.post('/data', async (req, res) => {
+  try {
+    const { latitude, longitude, status } = req.body;
+    const newLocation = new Location({ latitude, longitude, status });
+    await newLocation.save();
+    res.status(201).json({ message: 'Location added successfully', newLocation });
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding data', error });
   }
 });
 

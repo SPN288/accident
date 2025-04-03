@@ -18,77 +18,78 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routes
 app.use('/',require("./ambulance_app"));
+app.use('/',require("./forHospitalPage"));
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Define data schema and model aviskhit
-const alertSchema = new mongoose.Schema({
-  mobileNumber: { type: String, required: true },
-  latitude: { type: Number, required: true },
-  longitude: { type: Number, required: true },
-  status: { type: Boolean, required: true },
-  timestamp: { type: Date, default: Date.now },
-  noOfBeds: { type: Number, required: true },
-});
+// // Define data schema and model aviskhit
+// const alertSchema = new mongoose.Schema({
+//   mobileNumber: { type: String, required: true },
+//   latitude: { type: Number, required: true },
+//   longitude: { type: Number, required: true },
+//   status: { type: Boolean, required: true },
+//   timestamp: { type: Date, default: Date.now },
+//   noOfBeds: { type: Number, required: true },
+// });
 
-const Data = mongoose.model("alert", alertSchema);
+// const Data = mongoose.model("alert", alertSchema);
 
 
-// Endpoint to post data aviskhit
-app.post("/postData", async (req, res) => {
-  try {
-      const { mobileNumber, latitude, longitude, status, noOfBeds } = req.body;
-      const newData = new Data({ mobileNumber, latitude, longitude, status, noOfBeds });
-      await newData.save();
-      res.status(201).json({ message: "Data saved successfully!" });
-  } catch (error) {
-      console.error("Error saving data:", error);
-      res.status(500).json({ error: "Failed to save data" });
-  }
-});
+// // Endpoint to post data aviskhit
+// app.post("/postData", async (req, res) => {
+//   try {
+//       const { mobileNumber, latitude, longitude, status, noOfBeds } = req.body;
+//       const newData = new Data({ mobileNumber, latitude, longitude, status, noOfBeds });
+//       await newData.save();
+//       res.status(201).json({ message: "Data saved successfully!" });
+//   } catch (error) {
+//       console.error("Error saving data:", error);
+//       res.status(500).json({ error: "Failed to save data" });
+//   }
+// });
 
-// Endpoint to check if any data has status === true avikshith
-app.get("/checkStatus", async (req, res) => {
-  try {
-    const result = await Data.findOne({ status: true }).select(
-      "mobileNumber latitude longitude noOfBeds timestamp"
-    );
+// // Endpoint to check if any data has status === true avikshith
+// app.get("/checkStatus", async (req, res) => {
+//   try {
+//     const result = await Data.findOne({ status: true }).select(
+//       "mobileNumber latitude longitude noOfBeds timestamp"
+//     );
 
-    if (result) {
-      // Update the status to false after fetching the data
-      await Data.updateOne({ _id: result._id }, { $set: { status: false } });
+//     if (result) {
+//       // Update the status to false after fetching the data
+//       await Data.updateOne({ _id: result._id }, { $set: { status: false } });
 
-      res.status(200).json(result);
-    } else {
-      res.status(200).json(null); // No matching records
-    }
-  } catch (error) {
-    console.error("Error checking status:", error);
-    res.status(500).json({ error: "Failed to check status" });
-  }
-});
+//       res.status(200).json(result);
+//     } else {
+//       res.status(200).json(null); // No matching records
+//     }
+//   } catch (error) {
+//     console.error("Error checking status:", error);
+//     res.status(500).json({ error: "Failed to check status" });
+//   }
+// });
 
-// Endpoint to update status aviskhit
-app.post("/updateStatus", async (req, res) => {
-  try {
-      const { _id } = req.body;
-      await Data.findByIdAndUpdate(_id, { status: false });
-      res.status(200).json({ message: "Status updated successfully!" });
-  } catch (error) {
-      console.error("Error updating status:", error);
-      res.status(500).json({ error: "Failed to update status" });
-  }
-});
+// // Endpoint to update status aviskhit
+// app.post("/updateStatus", async (req, res) => {
+//   try {
+//       const { _id } = req.body;
+//       await Data.findByIdAndUpdate(_id, { status: false });
+//       res.status(200).json({ message: "Status updated successfully!" });
+//   } catch (error) {
+//       console.error("Error updating status:", error);
+//       res.status(500).json({ error: "Failed to update status" });
+//   }
+// });
 
-// Endpoint to fetch all data avikshit
-app.get("/getAllData", async (req, res) => {
-  try {
-      const allData = await Data.find();
-      res.status(200).json(allData);
-  } catch (error) {
-      console.error("Error fetching data:", error);
-      res.status(500).json({ error: "Failed to fetch data" });
-  }
-});
+// // Endpoint to fetch all data avikshit
+// app.get("/getAllData", async (req, res) => {
+//   try {
+//       const allData = await Data.find();
+//       res.status(200).json(allData);
+//   } catch (error) {
+//       console.error("Error fetching data:", error);
+//       res.status(500).json({ error: "Failed to fetch data" });
+//   }
+// });
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const sensorDataSchema = new mongoose.Schema({

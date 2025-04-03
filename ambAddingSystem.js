@@ -52,13 +52,15 @@ const ambulanceSchema = new mongoose.Schema({
   setInterval(async () => {
     try {
       const alerts = await Alert.find({ status: true });
+      //console.log(alerts);
       for (const alert of alerts) {
         const { hospitalID, latitude, longitude, noOfBeds } = alert;
         
         const ambulanceData = await AmbulanceList.findOne({ hospitalID });
+        //console.log(ambulanceData);
         if (ambulanceData) {
           const availableAmbulances = ambulanceData.ambulanceId.filter(a => a.status === true).slice(0, noOfBeds);
-          
+          //console.log(availableAmbulances);
           for (const ambulance of availableAmbulances) {
             const newAmbAlert = new AmbAlert({
               ambulanceId: ambulance.ID,
@@ -66,8 +68,11 @@ const ambulanceSchema = new mongoose.Schema({
               latitude,
               longitude,
             });
+            console.log(newAmbAlert);
             await newAmbAlert.save();
           }
+          // Set alert status to false after processing
+        await Alert.updateOne({ _id: alert._id }, { $set: { status: false } });
         }
       }
     } catch (error) {

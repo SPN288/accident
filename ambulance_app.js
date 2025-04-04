@@ -1,25 +1,16 @@
 const express = require('express');
 const router = express.Router()
 const mongoose = require('mongoose');
-
 const Alert= require('./models/alert');
 const ambAlert= require('./models/ambAlert');
-
 
 const ambulanceSchema = new mongoose.Schema({
   ambulanceId: Number,
   password: String,
 });
 
-// const alertSchema = new mongoose.Schema({
-//   ambulanceId: Number,
-//   status: Boolean,
-//   latitude: Number,
-//   longitude: Number
-// });
-
 const Ambulance = mongoose.model('Ambulance', ambulanceSchema);
-//const ambAlert = mongoose.model('ambAlert', alertSchema);
+
 
 // Login endpoint
 router.post('/anb_login', async (req, res) => {

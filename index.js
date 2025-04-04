@@ -17,7 +17,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .catch(err => console.log("Error: ", err));
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routes
-app.use('/',require("./hospitralPage"));
+app.use('/',require("./hospitalPage"));
 app.use('/',require("./forHospitalPage"));
 app.use('/',require("./ambulance_app"));
 app.use('/',require("./ambAddingSystem"));

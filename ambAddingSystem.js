@@ -8,25 +8,7 @@ const ambulanceSchema = new mongoose.Schema({
     ambulanceId: [{ ID: Number, status: Boolean }],
   });
   const AmbulanceList = mongoose.model("ambulancelist", ambulanceSchema);
-  
-//   const alertSchema = new mongoose.Schema({
-//     hospitalID: { type: String, required: true },
-//     latitude: { type: Number, required: true },
-//     longitude: { type: Number, required: true },
-//     status: { type: Boolean, required: true },
-//     timestamp: { type: Date, default: Date.now },
-//     noOfBeds: { type: Number, required: true },
-//   });
-//   const Alert = mongoose.model("alert", alertSchema);
-  
-//   const ambAlertSchema = new mongoose.Schema({
-//     ambulanceId: Number,
-//     status: Boolean,
-//     latitude: Number,
-//     longitude: Number,
-//   });
-//   const AmbAlert = mongoose.model("ambAlert", ambAlertSchema);
-  
+    
   // Endpoint to add ambulance data
   router.post("/add-ambulance", async (req, res) => {
     try {

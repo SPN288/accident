@@ -1,24 +1,8 @@
 const express = require('express');
 const router = express.Router()
-const mongoose = require('mongoose');
-//import alert from './models/alert';
 const Data= require('./models/alert');
-const AmbAlert= require('./models/ambAlert');
 
-
-// Define data schema and model aviskhit
-// const alertSchema = new mongoose.Schema({
-//     hospitalID: { type: String, required: true },
-//     latitude: { type: Number, required: true },
-//     longitude: { type: Number, required: true },
-//     status: { type: Boolean, required: true },
-//     timestamp: { type: Date, default: Date.now },
-//     noOfBeds: { type: Number, required: true },
-//   });
-  
-  //const Data = alert;
-  
-  
+ 
   // Endpoint to post data aviskhit
   router.post("/postData", async (req, res) => {
     try {

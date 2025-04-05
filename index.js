@@ -26,7 +26,7 @@ app.use('/',require("./hlogin"));
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const sensorDataSchema = new mongoose.Schema({
-    mobileNumber: { type: String, required: true }, // Make mobile number required
+    ID: { type: String, required: true }, // Make mobile number required
     latitude: Number,
     longitude: Number,
     speed: Number,
@@ -45,7 +45,7 @@ const sensorDataSchema = new mongoose.Schema({
 const bedsSchema = new mongoose.Schema({
   lat: Number,
   long: Number,
-  mobile_number: { type: Number, unique: true },
+  ID: { type: Number, unique: true },
   status: Boolean,
   no_of_beds: [Number],
 });
@@ -55,7 +55,7 @@ const Beds = mongoose.model("Beds", bedsSchema);
 const accidentSchema = new mongoose.Schema({
   lat: Number,
   long: Number,
-  mobile_number: Number,
+  ID: Number,
   status: Boolean,
 });
 const Accident = mongoose.model("Accident", accidentSchema);
@@ -63,12 +63,12 @@ const Accident = mongoose.model("Accident", accidentSchema);
   // Endpoint to handle sensor data upload
   app.post("/upload_sensor_data", async (req, res) => {
     console.log("Received data:", req.body); // Log received data
-    const { mobileNumber, latitude, longitude, speed, accelX, accelY, accelZ, gyroX, gyroY, gyroZ } = req.body;
+    const { ID, latitude, longitude, speed, accelX, accelY, accelZ, gyroX, gyroY, gyroZ } = req.body;
   
     try {
       // Create a new document for each data point
       const newSensorData = new SensorData({
-        mobileNumber,
+        ID,
         latitude,
         longitude,
         speed,
@@ -142,9 +142,9 @@ app.get("/accident-status", async (req, res) => {
 // Endpoint to post data to beds cluster
 app.post("/beds", async (req, res) => {
   try {
-      const { lat, long, mobile_number, status, no_of_beds } = req.body;
+      const { lat, long, ID, status, no_of_beds } = req.body;
 
-      const existingBeds = await Beds.findOne({ mobile_number });
+      const existingBeds = await Beds.findOne({ ID });
 
       if (existingBeds) {
           existingBeds.no_of_beds.push(...no_of_beds);
@@ -152,7 +152,7 @@ app.post("/beds", async (req, res) => {
           await existingBeds.save();
           return res.status(200).json({ message: "Beds updated successfully" });
       } else {
-          const newBeds = new Beds({ lat, long, mobile_number, status, no_of_beds });
+          const newBeds = new Beds({ lat, long, ID, status, no_of_beds });
           await newBeds.save();
           return res.status(201).json({ message: "Beds data added successfully" });
       }
@@ -163,11 +163,11 @@ app.post("/beds", async (req, res) => {
 
 // Endpoint to post data to Accident collection
 app.post("/accidents", async (req, res) => {
-  const { lat, long, mobile_number, status } = req.body;
+  const { lat, long, ID, status } = req.body;
   console.log(req.body)
 
   try {
-    const newRecord = new Accident({ lat, long, mobile_number, status });
+    const newRecord = new Accident({ lat, long, ID, status });
     await newRecord.save();
     res.status(201).json({ message: "Accident data added successfully", data: newRecord });
   } catch (error) {

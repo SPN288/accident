@@ -29,6 +29,47 @@ const ambulanceSchema = new mongoose.Schema({
       res.status(500).send(err);
     }
   });
+
+  router.put("/set-ambulance-true/:id", async (req, res) => {
+    const ambulanceID = parseInt(req.params.id);
+  
+    try {
+      const result = await AmbulanceList.findOneAndUpdate(
+        { "ambulanceId.ID": ambulanceID },
+        { $set: { "ambulanceId.$.status": true } },
+        { new: true }
+      );
+  
+      if (!result) {
+        return res.status(404).send("Ambulance ID not found");
+      }
+  
+      res.status(200).json(result);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });
+  
+  // Endpoint to set ambulance status to false by ID
+  router.put("/set-ambulance-false/:id", async (req, res) => {
+    const ambulanceID = parseInt(req.params.id);
+  
+    try {
+      const result = await AmbulanceList.findOneAndUpdate(
+        { "ambulanceId.ID": ambulanceID },
+        { $set: { "ambulanceId.$.status": false } },
+        { new: true }
+      );
+  
+      if (!result) {
+        return res.status(404).send("Ambulance ID not found");
+      }
+  
+      res.status(200).json(result);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });
   
   // Function to monitor alert collection every second
   setInterval(async () => {

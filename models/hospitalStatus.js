@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const hospitalSchema = new mongoose.Schema({
-    hID: { type: Number, required: true },
+    hID: { type: String, required: true },
     lat: { type: Number, required: true },
     long: { type: Number, required: true },
     status: { type: Boolean, required: true },

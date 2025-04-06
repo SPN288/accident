@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
 const hospitalSchema = new mongoose.Schema({
-    hospitalID: { type: String, required: true },
-    latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true },
+    hID: { type: String, required: true },
+    lat: { type: Number, required: true },
+    long: { type: Number, required: true },
     status: { type: Boolean, required: true },
     timestamp: { type: Date, default: Date.now },
-    noOfBeds: { type: Number, required: true },
+    nofBeds: { type: Number, required: true },
   });
   module.exports = mongoose.model('HospitalStatus', hospitalSchema);
 

@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const HospitalStatus= require('./models/hospitalStatus');
 
 // Endpoint to insert data
-app.post('/api/hospital-status', async (req, res) => {
+router.post('/api/hospital-status', async (req, res) => {
     try {
       const newEntry = new HospitalStatus(req.body);
       await newEntry.save();
@@ -15,7 +15,7 @@ app.post('/api/hospital-status', async (req, res) => {
   });
   
   // Endpoint to check for active status of specific hospital
-  app.get('/api/hospital-status/:hID', async (req, res) => {
+  router.get('/api/hospital-status/:hID', async (req, res) => {
     try {
       const { hID } = req.params;
       const activeStatus = await HospitalStatus.findOne({
@@ -34,7 +34,7 @@ app.post('/api/hospital-status', async (req, res) => {
   });
   
   // Endpoint to get full log of a hospital
-  app.get('/api/hospital-log/:hID', async (req, res) => {
+  router.get('/api/hospital-log/:hID', async (req, res) => {
     try {
       const { hID } = req.params;
       const logs = await HospitalStatus.find({ hID }).sort({ timestamp: -1 });

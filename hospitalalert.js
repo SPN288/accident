@@ -15,11 +15,11 @@ app.post('/api/hospital-status', async (req, res) => {
   });
   
   // Endpoint to check for active status of specific hospital
-  app.get('/api/hospital-status/:hospitalID', async (req, res) => {
+  app.get('/api/hospital-status/:hID', async (req, res) => {
     try {
-      const { hospitalID } = req.params;
+      const { hID } = req.params;
       const activeStatus = await HospitalStatus.findOne({
-        hospitalID,
+        hID,
         status: true,
       }).sort({ timestamp: -1 });
       
@@ -34,10 +34,10 @@ app.post('/api/hospital-status', async (req, res) => {
   });
   
   // Endpoint to get full log of a hospital
-  app.get('/api/hospital-log/:hospitalID', async (req, res) => {
+  app.get('/api/hospital-log/:hID', async (req, res) => {
     try {
-      const { hospitalID } = req.params;
-      const logs = await HospitalStatus.find({ hospitalID }).sort({ timestamp: -1 });
+      const { hID } = req.params;
+      const logs = await HospitalStatus.find({ hID }).sort({ timestamp: -1 });
       res.json(logs);
     } catch (error) {
       res.status(500).json({ error: error.message });

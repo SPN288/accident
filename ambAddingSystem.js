@@ -80,14 +80,13 @@ setInterval(async () => {
     //console.log(alerts);
     for (const alert of alerts) {
       const { hospitalID, latitude, longitude, noOfBeds } = alert;
-      
+
       const newhalert = new HospitalStatus({
-        hospitalID: hospitalID,
-        latitude: latitude,
-        longitude: longitude,
+        hID: hospitalID,
+        lat: latitude,
+        long: longitude,
         status: true,
-        timestamp: { type: Date, default: Date.now },
-        noOfBeds: noOfBeds,
+        nofBeds: noOfBeds,
       })
       await newhalert.save();
 
